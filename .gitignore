@@ -20,4 +20,4 @@ lerna-debug.log*
 
 
 # dotenv
-.env
+config.env
