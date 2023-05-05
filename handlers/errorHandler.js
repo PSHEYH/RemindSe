@@ -1,7 +1,7 @@
 const AppError = require('../exceptions/app.exception');
 
 const handleForeignKeyError = (err) => {
-    const message = `Foreign key constraints failed in field. ${error.fields[0]}`;
+    const message = `Foreign key constraints failed in field ${err.fields[0]}`;
     return new AppError(message, 404);
 }
 
@@ -39,17 +39,15 @@ const sendErrorProduction = (err, res) => {
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
-    if (process.env.NODE_ENV === 'development') {
-        sendErrorDev(err, res);
-    } else if (process.env.NODE_ENV.trim() === 'production') {
-        const errorName = err.name;
-        let error = { ...err };
-        if (errorName === 'SequelizeForeignKeyConstraintError') {
-            error = handleForeignKeyError(error);
-        }
-        if (errorName === 'SequelizeValidationError') {
-            error = handleValidationErrorDB(error);
-        }
-        sendErrorProduction(error, res);
+
+    const errorName = err.name;
+    let error = { ...err };
+    if (errorName === 'SequelizeForeignKeyConstraintError') {
+        error = handleForeignKeyError(error);
     }
+    if (errorName === 'SequelizeValidationError') {
+        error = handleValidationErrorDB(error);
+    }
+    ///sendErrorProduction(error, res);
+    sendErrorDev(error, res);
 };

@@ -11,30 +11,31 @@ exports.createUser = catchAsync(async (req, res, next) => {
     });
 })
 
-exports.getUsers = async (req, res, next) => {
+exports.getUsers = catchAsync(async (req, res, next) => {
     const users = await User.findAll({ limit: req.body.limit, offset: req.body.offset });
     res.json({
         users: users,
         status: "success"
     });
-}
+})
 
-exports.updateUser = async (req, res, next) => {
+exports.updateUser = catchAsync(async (req, res, next) => {
     await User.update(req.body, {
         where: {
             device_id: req.params.id
-        }
+        },
+        fields: ["name", "fcm_token", "is_notify", "avatar"]
     });
 
     res.json({
         status: "update"
     });
-}
+})
 
-exports.getMyData = async (req, res, next) => {
+exports.getMyData = catchAsync(async (req, res, next) => {
     const mydata = await User.findByPk(req.params.id);
     res.json({
         data: mydata,
         status: "success"
     });
-}
+})

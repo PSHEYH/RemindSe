@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const User = require('./user.js');
 const sequelize = require('../connectDatabase');
 
 const Task = sequelize.define('Task', {
@@ -49,17 +48,16 @@ const Task = sequelize.define('Task', {
         validate: {
             isIn: {
                 args: [['none', 'daily', 'weekly', 'monthly', 'yearly']],
-                msg: "Must be none or daily, or weekly, or monthly, or yearly"
+                msg: "Retry must be none or daily, or weekly, or monthly, or yearly"
             }
         },
-        defaultValue: 'Monday'
     },
     notification_time: {
         type: DataTypes.ENUM('none', 'hour', 'day', 'week', 'month'),
         validate: {
             isIn: {
                 args: [['none', 'hour', 'day', 'week', 'month']],
-                msg: "Must be none or hour, or day, or week, or month"
+                msg: "Notification time must be none or hour, or day, or week, or month"
             }
         },
         defaultValue: 'none'
@@ -68,10 +66,6 @@ const Task = sequelize.define('Task', {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     }
-}, { timestamps: false });
-
-Task.belongsTo(User, {
-    foreignKey: 'device_id'
-});
+}, { timestamps: false, underscored: true });
 
 module.exports = Task;
